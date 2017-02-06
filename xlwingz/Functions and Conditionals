@@ -1,0 +1,39 @@
+'Functions in VBA: will return the variable with the same name as function'
+
+Function Greeting(name as String) as String
+  Greeting = "Um, Hello World, I'm " & name
+End Function
+
+'To use VBA functions in the front house, wrap them around user defined functions'
+
+Function Wrapper() as Double
+  Wrapper = Timer()
+End Function
+
+'Conditionals'
+
+If myBMI >= 18.5 and myBMI < 25 Then
+  MsgBox "You have a healthy BMI"
+Else
+  MsgBox "You should contact a dietician"
+End If
+
+If myBMI >= 18.5 and myBMI < 25 Then
+  MsgBox "You have a healthy BMI"
+ElseIf myBMI < 18.5
+  MsgBox "You are considered underweight"
+Else
+  MsgBox "You are considered overweight"
+End If
+
+'The Select Alternative to if'
+
+Select Case thechar 'Start, only categorical possibilites'
+
+Case "a", "e", "i", "o", "u"'In the case that the above statement returns boolean'
+  ActiveCell.Interior.Color = vbRed
+Case "0" To "9"
+  ActiveCell.Interior.Color = vbGreen
+Case Else
+  ActiveCell.Interior.Color = vbWhite 'In the case neither of the cases is true'
+End Select

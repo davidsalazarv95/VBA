@@ -1,0 +1,50 @@
+
+Sub pa()
+Dim rng As Range
+Dim path As String
+Dim dir As String
+''Dim wb As Workbook
+Dim criteria As Range
+Dim final As Range
+Dim destination As Range
+Dim rng2 As Range
+Dim tempo As Double
+
+Set rng = ThisWorkbook.Worksheets(1).Range("A1").CurrentRegion
+
+Range("E1").Value = "Libro"
+Range("E2").Value = 1
+
+Set criteria = ThisWorkbook.Worksheets(1).Range("E1:E2")
+
+path = "/Users/david_salazarv/Desktop/xlwingz/"
+dir = path & "Libro " & "1" & ".xlsx"
+
+Set primero = ThisWorkbook.Worksheets(1).Range("A8")
+
+Set wb = Workbooks.Open(Filename:=dir)
+
+Set final = wb.Worksheets(1).Range("A1").CurrentRegion
+
+Set destination = final.Resize(final.Rows.count + 1)
+
+Set celda = destination.Cells(destination.Rows.count, 1)
+
+With wb.Worksheets(1)
+
+r = .Range("A" & Rows.count).End(xlUp).Row + 1
+
+End With
+
+rng.AdvancedFilter _
+     Action:=xlFilterCopy, _
+     CriteriaRange:=criteria, _
+     CopyToRange:=celda
+
+With wb.Worksheets(1)
+
+.Rows(r).Delete
+
+End With
+
+End Sub

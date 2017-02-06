@@ -1,0 +1,28 @@
+Options Explicit 'To force yourself to declare all variables'
+'To declare'
+
+dim weight as Double
+dim state as Boolean
+Dim anything as Variant
+dim rng as Range
+Dim input as String
+Dim ws as Worksheet
+
+Set rng = Range("B1").CurrentRegion
+Set ws = ThisWorkbook.Worksheets.Add 'Object assignment requires Set'
+
+ws.Range("A1").value = 12
+
+'Adding to a table an observation: append'
+
+Set rng = Range("B1").CurrentRegion
+
+Set rng = rng.resize(rng.Rows.Count + 1) 'Add one more row to range object'
+
+rng.Cells(rng.Rows.Count, 1) = FirstName
+
+rng.Cells(rng.Rows.Count, 2) = LastName
+
+'Worksheet functions in the back of the house'
+
+WorksheetFunction.Sum()

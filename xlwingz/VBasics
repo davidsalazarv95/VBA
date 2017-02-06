@@ -1,0 +1,34 @@
+'Range Object'
+
+Range("A1:B10").EntireRow
+Range("A2").EntireColumn
+
+Range("A2").offset(1,2)
+
+Range("A2:B2").resize(2,1)
+
+Range("A2").CurrentRegion
+
+Range("A2").CurrentRegion.Cells(1, 2) 'From start range, count one cell down, 2 to the right.'
+
+'Two types of Collections: Worksheets and Workbooks. Make sure you're in the right one
+
+Worksheets("Sheet1").Range("A1")
+
+Worbooks("First").Worksheets("Sheet1").Range("A1")
+
+ThisWorkbook 'The one where the macro is'
+
+MsgBox "What you want"
+
+Range("A1").value = InputBox("Please enter your name")
+
+'Using variables'
+
+wIntLbs = InputBox("Your weight in lbs.")
+
+height = InputBox("Your height in inches")
+
+Range("A1").value = (wIntLbs * 703) / (height) ^ 2
+
+MsgBox "Your BMI is " & Range("A1").value

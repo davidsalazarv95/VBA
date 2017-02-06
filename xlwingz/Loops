@@ -1,0 +1,50 @@
+'Loops: Do Loop'
+
+Do Until ActiveCell.value = "" 'Will repeat until statement is true'
+
+'Looping'
+
+Loop
+
+Do While ActiveCell.value <> "" 'Will while statement is true'
+
+'Looping'
+  ActiveCell.Offset(0, 1).Select 'This is key to traverse a column'
+Loop
+
+'Loops: For Next'
+
+For x = 1 To 10 Step 2
+Dim x as Integer
+
+
+Next x
+
+'Loops: For Each'
+
+Dim ws as Worksheet
+For each ws in ThisWorkbook.Worksheets
+
+
+Next
+
+'Equality of Objects'
+Dim wb as Workbook
+  ThisWorkbook is wb
+
+'Loop over cells'
+Dim mycell as Range
+Dim min as Double
+
+Min = 10000
+
+For each mycell in Range("A1").CurrentRegion.resize(, 1)
+  if mycell.value = "Criteria A" Then
+    if mycell.offset(0, 1).value = "Criteria B" Then
+      if mycell.offset(0, 2).value < Min Then
+        Min = mycell.offset(0, 2).value
+      End If
+    End If
+  End If
+
+Next
