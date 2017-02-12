@@ -1,0 +1,177 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Function Juan
+
+Input: m + n columnas.
+Output: matriz de coeficientes de regresión de m vs n.
+
+Pasos:
+
+1. Convertir m columnas en diferentes valores de una misma columna.
+2. Agrupar por valor de columna creada anteriormente.
+3. Correr regresión por grupo y volver a grupar en un df.
+
+
+```{r}
+library(dplyr)
+library(broom)
+library(tidyr)
+```
+
+Dummy Data
+
+
+```{r}
+df = data.frame( 
+  fondo_one    = runif(504, min = 20, max = 80),
+  fondo_two   = runif(504, min = -10, max = 125),
+  indice_one  = runif(504, min = 0, max = 2500),
+  indice_two = runif(504, min = - 10, max = 25)  
+)
+df
+```
+
+
+## Paso 1
+
+
+```{r}
+(modificado <- df %>%
+  gather(key = "fondo", value = "ret_fondo", 1:2) %>%
+   select(fondo, ret_fondo, 1:2)
+   )
+```
+
+## Paso 2 y 3
+
+
+```{r}
+linear_fit <- function(df) {
+  df['fit'] = fitCAPM = lm(ret_fondo ~ indice_one + indice_two, data = .)
+}
+```
+
+
+```{r}
+library(tidyverse)
+modificado %>% split(.$fondo) %>%
+  map(function(df) lm(ret_fondo ~ ., data = df))
+  
+```
+
+
+```{r}
+(regresiones = modificado %>% group_by(fondo) %>%
+  do(fitCAPM = lm(ret_fondo ~ indice_one + indice_two, data = .)) %>%
+  ungroup() %>%
+  group_by(fondo)) %>%
+  tidy(fitCAPM)
+```
+
+
+```{r}
+tidy(regresiones, fitCAPM) %>%
+  gather(variable, val, -(fondo:term), na.rm = TRUE) %>%
+  select(-variable) %>%
+  spread(term, val)
+```
+
+```{r}
+resul <- modificado %>% group_by(fondo) %>%
+  do(fitCAPM = lm(ret_fondo ~ indice_one + indice_two, data = .)) %>%
+  tidy(fitCAPM) 
+resul[,2]
+```
+
+Solucionando el problema de Juan.
+
+
+```{r}
+juan_function <- function(df) {
+resultado <- df %>%
+  gather(key = "fondo", value = "ret_fondo", 1:22) %>%
+  select(fondo, ret_fondo, -(13:14)) %>%
+  group_by(fondo) %>%
+  do(fitCAPM = lm(ret_fondo ~ .[,3] + .[,4] + .[,5] + .[,6] + .[,7] + .[,8] + .[,9] + .[,10] + .[,11] +
+                    .[,12] + .[,13] + .[,14] , data = .)) %>%
+  tidy(fitCAPM)
+resultado
+}
+```
+
+
+```{r}
+library(readr)
+df <- read.csv("rawdata.csv")
+df
+```
+
+```{r}
+f <- as.formula(paste('ret_fondo ~', paste(colnames(df)[23:34], collapse='+')))
+f
+```
+
+
+```{r}
+datos <- df %>%
+  gather(key = "fondo", value = "ret_fondo", 1:22) %>%
+  group_by(fondo) %>%
+  do(mk = (lm(f, data = .)))
+
+```
+
+
+```{r}
+cosa <- tidy(datos, mk)
+cosa$std.error <- NULL
+cosa$p.value <- NULL
+cosa
+```
+
+```{r}
+temp <- cosa
+temp$statistic <- NULL
+beta <- temp %>%
+  spread(term, estimate)
+```
+
+```{r}
+temp2 <- cosa
+temp2$estimate <- NULL
+t_stat <- temp2 %>%
+  spread(term, statistic)
+```
+
+
+```{r}
+beta[["term"]] <- "Beta"
+t_stat[["term"]] <- "t-statistic"
+```
+
+```{r}
+semi <- beta %>%
+  select(fondo, term, 2:14)
+```
+
+```{r}
+semi2 <- t_stat %>%
+  select(fondo, term, 2:14)
+semi2
+```
+
+```{r}
+final <- bind_rows(semi, semi2) %>%
+  arrange(fondo)
+final
+```
+
+```{r}
+library(xtable)
+s <- xtable(final)
+print(s, tabular.environment="longtable", align = c("l|", rep("r", ncol(s))),
+      include.rownames = TRUE, floating = FALSE, auto = TRUE)
+```
+
